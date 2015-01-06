@@ -1,13 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-//#include <sys/types.h>
 #include <sys/socket.h>
-//#include <unistd.h>
 #include <sys/select.h>
-//#include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-//#include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
 
@@ -22,7 +18,6 @@ int valopt;
 int soc,
 	remotePort,
 	status = 0;
-//int errno = 0;
 int timeout;
 struct hostent *hostPtr = NULL;
 int clientSocket;
@@ -38,7 +33,10 @@ if (4 != argc)
 remoteHost = argv[1];
 remotePort = atoi(argv[2]);
 timeout = atoi(argv[3]);
-
+if ( remotePort < 1 ) {
+	fprintf(stderr,"Invalid port %s\n", argv[2]);
+	exit(1);
+}
 fprintf(stdout,"%s:%i waiting %i ",remoteHost,remotePort,timeout);
 /*
 * need to resolve the remote server name or
@@ -89,6 +87,10 @@ if (res < 0) {
 		strerror(valopt);
 		exit(1);
 	}
+}
+else {
+	fprintf(stdout,"Unknown error, connect() returned %i", res);
+	exit(1);
 }
 
 // Set to blocking mode again...
