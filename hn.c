@@ -1,13 +1,12 @@
 #include <stdio.h> /* perror() */
 #include <stdlib.h> /* atoi() */
-#include <sys/types.h>
+//#include <sys/types.h>
 #include <sys/socket.h>
-#include <unistd.h> /* read() */
-#include <netinet/in.h>
+//#include <unistd.h> /* read() */
+//#include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#include <error.h>
-#include <unistd.h>
+//#include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
 
@@ -22,7 +21,7 @@ int valopt;
 int soc,
 	remotePort,
 	status = 0;
-int errno;
+int errno = 0;
 int timeout;
 struct hostent *hostPtr = NULL;
 int clientSocket;
@@ -39,7 +38,7 @@ remoteHost = argv[1];
 remotePort = atoi(argv[2]);
 timeout = atoi(argv[3]);
 
-fprintf(stdout,"%s:%i waiting %i ... ",remoteHost,remotePort,timeout);
+fprintf(stdout,"%s:%i waiting %i ",remoteHost,remotePort,timeout);
 /*
 * need to resolve the remote server name or
 * IP address */
@@ -75,26 +74,26 @@ if (res < 0) {
 		tv.tv_usec = 0;
 		FD_ZERO(&myset);
 		FD_SET(soc, &myset);
-			if (select(soc+1, NULL, &myset, NULL, &tv) > 0) {
-				lon = sizeof(int);
-				getsockopt(soc, SOL_SOCKET, SO_ERROR, (void*)(&valopt), &lon);
-				if (valopt) {
-					fprintf(stdout," fail1\n");
-					strerror(valopt);
-					exit(1);
-					}
+		if (select(soc+1, NULL, &myset, NULL, &tv) > 0) {
+			lon = sizeof(int);
+			getsockopt(soc, SOL_SOCKET, SO_ERROR, (void*)(&valopt), &lon);
+			if (valopt) {
+				fprintf(stdout," refused\n");
+				strerror(valopt);
+				exit(1);
 				}
-				else {
-					fprintf(stdout," fail2\n");
-					strerror(valopt);
-					exit(1);
-					}
-		}
-		else {
-			fprintf(stdout," fail3\n");
-			strerror(errno);
-			exit(1);
-		}
+			}
+			else {
+				fprintf(stdout," timeout\n");
+				strerror(valopt);
+				exit(1);
+				}
+	}
+	else {
+		fprintf(stdout," fail3\n");
+		strerror(errno);
+		exit(1);
+	}
 }
 
 // Set to blocking mode again...
