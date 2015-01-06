@@ -1,8 +1,9 @@
-#include <stdio.h> /* perror() */
-#include <stdlib.h> /* atoi() */
+#include <stdio.h>
+#include <stdlib.h>
 //#include <sys/types.h>
 #include <sys/socket.h>
-//#include <unistd.h> /* read() */
+//#include <unistd.h>
+#include <sys/select.h>
 //#include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -10,7 +11,7 @@
 #include <fcntl.h>
 #include <string.h>
 
-main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 int res;
 struct sockaddr_in addr;
 long arg;
@@ -69,7 +70,7 @@ addr.sin_port = htons(remotePort);
 res = connect(soc, (struct sockaddr *)&addr, sizeof(addr));
 
 if (res < 0) {
-	if (errno) {
+	if (errno > 0) {
 		tv.tv_sec = timeout;
 		tv.tv_usec = 0;
 		FD_ZERO(&myset);
