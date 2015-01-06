@@ -1,5 +1,5 @@
 #!/bin/bash
-
+rm hn
 if gcc hn.c -o hn; then
 	echo "Should sucseed"
 	./hn google.com 80 5 && echo Returns true || echo Returns false

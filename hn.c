@@ -22,7 +22,7 @@ int valopt;
 int soc,
 	remotePort,
 	status = 0;
-int errno = 0;
+//int errno = 0;
 int timeout;
 struct hostent *hostPtr = NULL;
 int clientSocket;
@@ -49,6 +49,7 @@ if (NULL == hostPtr)
 	hostPtr = gethostbyaddr(remoteHost,strlen(remoteHost), AF_INET);
 	if (NULL == hostPtr)
 		{
+		fprintf(stdout," unable to resolve %s\n", remoteHost);
 		exit(1);
 		}
 	}
@@ -70,29 +71,22 @@ addr.sin_port = htons(remotePort);
 res = connect(soc, (struct sockaddr *)&addr, sizeof(addr));
 
 if (res < 0) {
-	if (errno > 0) {
-		tv.tv_sec = timeout;
-		tv.tv_usec = 0;
-		FD_ZERO(&myset);
-		FD_SET(soc, &myset);
-		if (select(soc+1, NULL, &myset, NULL, &tv) > 0) {
-			lon = sizeof(int);
-			getsockopt(soc, SOL_SOCKET, SO_ERROR, (void*)(&valopt), &lon);
-			if (valopt) {
-				fprintf(stdout," refused\n");
-				strerror(valopt);
-				exit(1);
-				}
-			}
-			else {
-				fprintf(stdout," timeout\n");
-				strerror(valopt);
-				exit(1);
-				}
+	tv.tv_sec = timeout;
+	tv.tv_usec = 0;
+	FD_ZERO(&myset);
+	FD_SET(soc, &myset);
+	if (select(soc+1, NULL, &myset, NULL, &tv) > 0) {
+		lon = sizeof(int);
+		getsockopt(soc, SOL_SOCKET, SO_ERROR, (void*)(&valopt), &lon);
+		if (valopt) {
+			fprintf(stdout," refused\n");
+			strerror(valopt);
+			exit(1);
+		}
 	}
 	else {
-		fprintf(stdout," fail3\n");
-		strerror(errno);
+		fprintf(stdout," timeout\n");
+		strerror(valopt);
 		exit(1);
 	}
 }
