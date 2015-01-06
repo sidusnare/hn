@@ -10,9 +10,11 @@
 *.so
 *.so.*
 *.dylib
-
 # Executables
 *.exe
 *.out
 *.app
 hn
+
+#tmp files
+.*.swp
