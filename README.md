@@ -6,7 +6,7 @@ Handy Nework port tester
 Function
 ===
 hn takes 3 paramaters, hostname/IP port timeout
-It will return true or false based on weather it was sucsessfull ot not in opening the port.
+It will return true or false based on weather it was sucsessfull or not in opening the port.
 
 Use
 ===
