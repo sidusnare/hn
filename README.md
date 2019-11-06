@@ -1,7 +1,7 @@
 hn
 ==
 
-Handy Nework port tester
+Handy Network TCP port tester, good for scripting
 
 Function
 ===
